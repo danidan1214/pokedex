@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Ruler, Weight, Zap, Shield, Heart, Swords, Activity, FastForward, Info, Crown } from 'lucide-react';
+import { X, Ruler, Weight, Zap, Shield, Heart, Swords, Activity, FastForward, Info, Crown, ImageOff } from 'lucide-react';
 import { usePokemonDetail } from '../hooks/usePokemon';
 import { TypeBadge } from './TypeBadge';
 
@@ -55,11 +55,13 @@ const StatBar: React.FC<{ label: string; value: number; max: number; icon: React
 
 export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose }) => {
   const { data: pokemon, isLoading } = usePokemonDetail(pokemonId || '');
+  const [imageError, setImageError] = useState(false);
 
   if (!pokemonId) return null;
 
   const mainType = pokemon?.types[0]?.toLowerCase() || 'normal';
   const mainColor = typeColors[mainType] || '#A8A77A';
+  const hasImage = pokemon?.image && !imageError;
 
   return (
     <AnimatePresence>
@@ -110,13 +112,21 @@ export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose }) => {
                   initial={{ scale: 0.8, rotate: -10 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", damping: 15 }}
-                  className="relative z-10 w-full max-w-[280px] aspect-square mt-8"
+                  className="relative z-10 w-full max-w-[280px] aspect-square mt-8 flex items-center justify-center"
                 >
-                  <img
-                    src={pokemon.image}
-                    alt={pokemon.name}
-                    className="w-full h-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)]"
-                  />
+                  {hasImage ? (
+                    <img
+                      src={pokemon.image}
+                      alt={pokemon.name}
+                      onError={() => setImageError(true)}
+                      className="w-full h-full object-contain filter drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)]"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-white/50">
+                      <ImageOff className="w-32 h-32 mb-4" />
+                      <span className="text-xl font-black uppercase tracking-widest">Sin imagen</span>
+                    </div>
+                  )}
                 </motion.div>
 
                 <div className="relative z-10 mt-8 text-center w-full">
