@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { ImageOff } from 'lucide-react';
 import type { PokemonBase } from '../../domain/models/Pokemon';
@@ -30,7 +30,7 @@ const typeGradients: Record<string, string> = {
   water: 'from-[#6390F0] to-[#83B0F0]',
 };
 
-export const PokemonCard: React.FC<Props> = ({ pokemon, onClick }) => {
+export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick }) => {
   const [imageError, setImageError] = useState(false);
   const mainType = pokemon.types[0]?.toLowerCase() || 'normal';
   const gradient = typeGradients[mainType] || 'from-slate-400 to-slate-300';
@@ -90,4 +90,6 @@ export const PokemonCard: React.FC<Props> = ({ pokemon, onClick }) => {
       </div>
     </motion.div>
   );
-};
+});
+
+PokemonCard.displayName = 'PokemonCard';

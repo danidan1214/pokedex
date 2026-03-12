@@ -7,7 +7,6 @@ import { usePokemonUI } from './presentation/hooks/logic/usePokemonUI';
 function App() {
   const {
     selectedId,
-    setSelectedId,
     searchTerm,
     page,
     isSearching,
@@ -18,6 +17,8 @@ function App() {
     handlePageChange,
     handleSearchChange,
     handleClearSearch,
+    handleSelectPokemon,
+    handleCloseModal,
   } = usePokemonUI();
 
   return (
@@ -28,22 +29,22 @@ function App() {
         <div className="absolute top-[20%] left-[-10%] w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-[100px]" />
       </div>
 
-      <Header 
+      <Header
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         onClearSearch={handleClearSearch}
       />
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:px-8 pb-32">
-        <PokemonGrid 
+        <PokemonGrid
           pokemonList={displayPokemon}
           isLoading={isLoading}
           isSearching={isSearching}
-          onPokemonClick={(p) => setSelectedId(p.id)}
+          onPokemonClick={handleSelectPokemon}
         />
 
         {!isSearching && (
-          <Pagination 
+          <Pagination
             currentPage={page}
             totalPages={totalPages}
             onPageChange={handlePageChange}
@@ -54,7 +55,7 @@ function App() {
 
       <PokemonModal
         pokemonId={selectedId}
-        onClose={() => setSelectedId(null)}
+        onClose={handleCloseModal}
       />
     </div>
   );

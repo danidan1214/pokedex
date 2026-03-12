@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface Props {
   type: string;
 }
 
-export const TypeBadge: React.FC<Props> = ({ type }) => {
+export const TypeBadge: React.FC<Props> = memo(({ type }) => {
   const bgColors: Record<string, string> = {
     bug: 'bg-[#A6B91A]',
     dark: 'bg-[#705746]',
@@ -37,4 +37,6 @@ export const TypeBadge: React.FC<Props> = ({ type }) => {
       {type}
     </span>
   );
-};
+});
+
+TypeBadge.displayName = 'TypeBadge';

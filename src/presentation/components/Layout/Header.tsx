@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Search, Sparkles, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -7,7 +8,7 @@ interface HeaderProps {
   onClearSearch: () => void;
 }
 
-export function Header({ searchTerm, onSearchChange, onClearSearch }: HeaderProps) {
+export const Header = memo(({ searchTerm, onSearchChange, onClearSearch }: HeaderProps) => {
   return (
     <header className="relative z-10 pt-16 pb-8 px-4 md:px-8">
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
@@ -75,4 +76,6 @@ export function Header({ searchTerm, onSearchChange, onClearSearch }: HeaderProp
       </div>
     </header>
   );
-}
+});
+
+Header.displayName = 'Header';
