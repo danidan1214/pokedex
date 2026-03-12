@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { SearchX } from 'lucide-react';
 import { PokemonCard } from '../PokemonCard';
 import type { PokemonBase } from '../../../domain/models/Pokemon';
 
@@ -31,13 +32,13 @@ export function PokemonGrid({ pokemonList, isLoading, isSearching, onPokemonClic
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex flex-col items-center justify-center min-h-[30vh] text-center"
+        className="flex flex-col items-center justify-center min-h-[30vh] text-center p-8"
       >
-        <div className="w-24 h-24 mb-6 opacity-20 grayscale">
-          <img src="/src/assets/react.svg" alt="Empty" className="w-full h-full" />
+        <div className="w-24 h-24 mb-6 bg-slate-100 rounded-full flex items-center justify-center text-slate-300">
+          <SearchX className="w-12 h-12" />
         </div>
         <h3 className="text-2xl font-bold text-slate-700 mb-2">No se encontraron Pokémon</h3>
-        <p className="text-slate-500">Intenta ajustar tu término de búsqueda.</p>
+        <p className="text-slate-500">Intenta ajustar tu término de búsqueda o revisa que el nombre sea correcto.</p>
       </motion.div>
     );
   }

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { ImageOff } from 'lucide-react';
 import type { PokemonBase } from '../../domain/models/Pokemon';
 import { TypeBadge } from './TypeBadge';
 
@@ -30,8 +31,11 @@ const typeGradients: Record<string, string> = {
 };
 
 export const PokemonCard: React.FC<Props> = ({ pokemon, onClick }) => {
+  const [imageError, setImageError] = useState(false);
   const mainType = pokemon.types[0]?.toLowerCase() || 'normal';
   const gradient = typeGradients[mainType] || 'from-slate-400 to-slate-300';
+
+  const hasImage = pokemon.image && !imageError;
 
   return (
     <motion.div
@@ -54,15 +58,23 @@ export const PokemonCard: React.FC<Props> = ({ pokemon, onClick }) => {
 
         {/* Pokemon Image */}
         <div className="absolute inset-0 flex items-center justify-center p-6">
-          <motion.img
-            src={pokemon.image}
-            alt={pokemon.name}
-            className="w-full h-full object-contain filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out z-10"
-            loading="lazy"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-          />
+          {hasImage ? (
+            <motion.img
+              src={pokemon.image}
+              alt={pokemon.name}
+              onError={() => setImageError(true)}
+              className="w-full h-full object-contain filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out z-10"
+              loading="lazy"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center text-white/70 z-10">
+              <ImageOff className="w-12 h-12 mb-2" />
+              <span className="text-xs font-bold uppercase tracking-tighter">Sin imagen</span>
+            </div>
+          )}
         </div>
       </div>
       
