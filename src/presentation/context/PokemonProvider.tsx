@@ -3,7 +3,7 @@ import { PokeApiRepository } from '../../infrastructure/repositories/PokeApiRepo
 import { PokemonContext } from './PokemonContext';
 
 export const PokemonProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const repository = new PokeApiRepository();
+  const repository = React.useMemo(() => new PokeApiRepository(), []);
 
   return (
     <PokemonContext.Provider value={repository}>

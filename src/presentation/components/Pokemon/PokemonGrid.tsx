@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SearchX } from 'lucide-react';
 import { PokemonCard } from '../PokemonCard';
@@ -7,10 +8,10 @@ interface PokemonGridProps {
   pokemonList: PokemonBase[];
   isLoading: boolean;
   isSearching: boolean;
-  onPokemonClick: (pokemon: PokemonBase) => void;
+  onPokemonClick: (id: number | string) => void;
 }
 
-export function PokemonGrid({ pokemonList, isLoading, isSearching, onPokemonClick }: PokemonGridProps) {
+export const PokemonGrid = memo(({ pokemonList, isLoading, isSearching, onPokemonClick }: PokemonGridProps) => {
   if (isLoading && !pokemonList.length) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[40vh]">
@@ -48,7 +49,7 @@ export function PokemonGrid({ pokemonList, isLoading, isSearching, onPokemonClic
       layout
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
     >
-      <AnimatePresence>
+      <AnimatePresence mode="popLayout">
         {pokemonList.map((pokemon) => (
           <motion.div
             key={pokemon.id}
@@ -59,11 +60,13 @@ export function PokemonGrid({ pokemonList, isLoading, isSearching, onPokemonClic
           >
             <PokemonCard
               pokemon={pokemon}
-              onClick={onPokemonClick}
+              onClick={(p) => onPokemonClick(p.id)}
             />
           </motion.div>
         ))}
       </AnimatePresence>
     </motion.div>
   );
-}
+});
+
+PokemonGrid.displayName = 'PokemonGrid';

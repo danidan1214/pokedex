@@ -13,15 +13,25 @@ interface PokeApiListResponse {
 export class PokeApiRepository implements IPokemonRepository {
   private readonly baseUrl = 'https://pokeapi.co/api/v2';
   private allPokemonNames: { name: string; url: string }[] | null = null;
+  private pokemonCache = new Map<string, PokemonBase>();
 
   async getPokemonList(limit: number, offset: number): Promise<{ results: PokemonBase[]; count: number }> {
     const response = await fetch(`${this.baseUrl}/pokemon?limit=${limit}&offset=${offset}`);
     const data: PokeApiListResponse = await response.json();
     
     const detailedPromises = data.results.map(async (p) => {
+      // Return from cache if available
+      if (this.pokemonCache.has(p.url)) {
+        return this.pokemonCache.get(p.url)!;
+      }
+
       const res = await fetch(p.url);
       const pokemonData = await res.json();
-      return PokemonMapper.toDomain(pokemonData);
+      const domainPokemon = PokemonMapper.toDomain(pokemonData);
+      
+      // Save to cache
+      this.pokemonCache.set(p.url, domainPokemon);
+      return domainPokemon;
     });
 
     const results = await Promise.all(detailedPromises);
@@ -48,12 +58,21 @@ export class PokeApiRepository implements IPokemonRepository {
     const term = name.toLowerCase();
     const filtered = this.allPokemonNames!
       .filter(p => p.name.includes(term) || p.url.split('/').filter(Boolean).pop() === term)
-      .slice(0, 20); // Limit results to avoid excessive API calls
+      .slice(0, 20);
 
     const detailedPromises = filtered.map(async (p) => {
+      // Return from cache if available
+      if (this.pokemonCache.has(p.url)) {
+        return this.pokemonCache.get(p.url)!;
+      }
+
       const res = await fetch(p.url);
       const pokemonData = await res.json();
-      return PokemonMapper.toDomain(pokemonData);
+      const domainPokemon = PokemonMapper.toDomain(pokemonData);
+      
+      // Save to cache
+      this.pokemonCache.set(p.url, domainPokemon);
+      return domainPokemon;
     });
 
     return Promise.all(detailedPromises);

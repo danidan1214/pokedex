@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -8,7 +9,7 @@ interface PaginationProps {
   isFetching?: boolean;
 }
 
-export function Pagination({ currentPage, totalPages, onPageChange, isFetching }: PaginationProps) {
+export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetching }: PaginationProps) => {
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
@@ -107,4 +108,6 @@ export function Pagination({ currentPage, totalPages, onPageChange, isFetching }
       </div>
     </motion.div>
   );
-}
+});
+
+Pagination.displayName = 'Pagination';
