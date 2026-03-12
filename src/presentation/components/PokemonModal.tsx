@@ -7,6 +7,7 @@ import { TypeBadge } from './TypeBadge';
 interface Props {
   pokemonId: number | string | null;
   onClose: () => void;
+  onTypeClick?: (type: string) => void;
 }
 
 const typeColors: Record<string, string> = {
@@ -53,7 +54,7 @@ const StatBar: React.FC<{ label: string; value: number; max: number; icon: React
   </div>
 );
 
-export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose }) => {
+export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose, onTypeClick }) => {
   const { data: pokemon, isLoading } = usePokemonDetail(pokemonId || '');
   const [imageError, setImageError] = useState(false);
 
@@ -145,7 +146,16 @@ export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose }) => {
                   </h2>
                   <div className="flex flex-wrap justify-center gap-2">
                     {pokemon.types.map((type) => (
-                      <TypeBadge key={type} type={type} />
+                      <TypeBadge 
+                        key={type} 
+                        type={type} 
+                        onClick={(t) => {
+                          if (onTypeClick) {
+                            onTypeClick(t);
+                            onClose();
+                          }
+                        }}
+                      />
                     ))}
                   </div>
                 </div>

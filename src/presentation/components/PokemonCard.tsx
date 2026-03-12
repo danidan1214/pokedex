@@ -7,6 +7,8 @@ import { TypeBadge } from './TypeBadge';
 interface Props {
   pokemon: PokemonBase;
   onClick: (pokemon: PokemonBase) => void;
+  onTypeClick?: (type: string) => void;
+  selectedType?: string | null;
 }
 
 const typeGradients: Record<string, string> = {
@@ -30,7 +32,7 @@ const typeGradients: Record<string, string> = {
   water: 'from-[#6390F0] to-[#83B0F0]',
 };
 
-export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick }) => {
+export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick, onTypeClick, selectedType }) => {
   const [imageError, setImageError] = useState(false);
   const mainType = pokemon.types[0]?.toLowerCase() || 'normal';
   const gradient = typeGradients[mainType] || 'from-slate-400 to-slate-300';
@@ -84,7 +86,12 @@ export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick }) => {
         </h3>
         <div className="flex flex-wrap gap-2 mt-auto">
           {pokemon.types.map((type) => (
-            <TypeBadge key={type} type={type} />
+            <TypeBadge 
+              key={type} 
+              type={type} 
+              onClick={onTypeClick}
+              isSelected={selectedType === type}
+            />
           ))}
         </div>
       </div>

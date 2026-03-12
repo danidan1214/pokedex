@@ -30,3 +30,13 @@ export const useSearchPokemon = (name: string, enabled: boolean = true) => {
     enabled: enabled && name.length > 2,
   });
 };
+
+export const usePokemonByType = (type: string, enabled: boolean = true) => {
+  const repository = usePokemonRepository();
+
+  return useQuery({
+    queryKey: ['pokemon-type', type],
+    queryFn: () => repository.getPokemonByType(type),
+    enabled: enabled && !!type,
+  });
+};

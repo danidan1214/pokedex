@@ -1,14 +1,32 @@
-import { memo } from 'react';
-import { Search, Sparkles, X } from 'lucide-react';
+import { memo, useState } from 'react';
+import { Search, Sparkles, X, SlidersHorizontal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TypeFilter } from './TypeFilter';
 
 interface HeaderProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   onClearSearch: () => void;
+  selectedType: string | null;
+  onTypeClick: (type: string) => void;
 }
 
-export const Header = memo(({ searchTerm, onSearchChange, onClearSearch }: HeaderProps) => {
+export const Header = memo(({ searchTerm, onSearchChange, onClearSearch, selectedType, onTypeClick }: HeaderProps) => {
+  const [showFilters, setShowFilters] = useState(false);
+
+  const handleToggleFilters = () => {
+    if (showFilters || selectedType) {
+      // If panel is open or a type is selected, close and clear
+      setShowFilters(false);
+      if (selectedType) {
+        onTypeClick(selectedType); // This clears the filter in usePokemonUI
+      }
+    } else {
+      // Otherwise just open
+      setShowFilters(true);
+    }
+  };
+
   return (
     <header className="relative z-10 pt-16 pb-8 px-4 md:px-8">
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
@@ -36,43 +54,80 @@ export const Header = memo(({ searchTerm, onSearchChange, onClearSearch }: Heade
           transition={{ delay: 0.1 }}
           className="text-slate-500 max-w-lg text-lg mb-10"
         >
-          Busca a tus Pokémon por nombre o usando su número de la Pokédex Nacional.
+          Busca a tus Pokémon por nombre o usa los filtros elementales.
         </motion.p>
 
-        {/* Search Bar */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="w-full max-w-2xl relative group"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-rose-200 to-blue-200 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="relative flex items-center bg-white rounded-[2rem] shadow-sm ring-1 ring-slate-900/5 focus-within:ring-2 focus-within:ring-rose-500 focus-within:shadow-xl transition-all duration-300 overflow-hidden">
-            <div className="pl-6 pr-4 py-4 text-slate-400">
-              <Search className="w-6 h-6" />
+        {/* Search Bar & Filter Toggle */}
+        <div className="w-full max-w-2xl flex items-center gap-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex-1 relative group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-rose-200 to-blue-200 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative flex items-center bg-white rounded-[2rem] shadow-sm ring-1 ring-slate-900/5 focus-within:ring-2 focus-within:ring-rose-500 focus-within:shadow-xl transition-all duration-300 overflow-hidden">
+              <div className="pl-6 pr-4 py-4 text-slate-400">
+                <Search className="w-6 h-6" />
+              </div>
+              <input
+                type="text"
+                placeholder="¿A qué Pokémon estás buscando?"
+                value={searchTerm}
+                onChange={(e) => onSearchChange(e.target.value)}
+                className="w-full py-4 pr-6 bg-transparent border-none outline-none text-slate-700 text-lg font-medium placeholder:text-slate-400 placeholder:font-normal"
+              />
+              <AnimatePresence>
+                {searchTerm && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    onClick={onClearSearch}
+                    className="absolute right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </div>
-            <input
-              type="text"
-              placeholder="¿A qué Pokémon estás buscando?"
-              value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full py-4 pr-6 bg-transparent border-none outline-none text-slate-700 text-lg font-medium placeholder:text-slate-400 placeholder:font-normal"
-            />
-            <AnimatePresence>
-              {searchTerm && (
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  onClick={onClearSearch}
-                  className="absolute right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </motion.button>
-              )}
-            </AnimatePresence>
-          </div>
-        </motion.div>
+          </motion.div>
+
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.25 }}
+            onClick={handleToggleFilters}
+            className={`p-4 rounded-[1.5rem] transition-all shadow-md flex items-center justify-center relative ${
+              showFilters || selectedType 
+                ? 'bg-rose-500 text-white shadow-rose-200' 
+                : 'bg-white text-slate-400 hover:text-slate-600'
+            }`}
+          >
+            <SlidersHorizontal className="w-6 h-6" />
+            {selectedType && !showFilters && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 border-2 border-slate-50 rounded-full" />
+            )}
+          </motion.button>
+        </div>
+
+        {/* Type Filter Section */}
+        <AnimatePresence>
+          {(showFilters || selectedType) && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, y: -20 }}
+              animate={{ opacity: 1, height: 'auto', y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -20 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+              className="w-full flex justify-center overflow-hidden"
+            >
+              <TypeFilter 
+                selectedType={selectedType}
+                onTypeClick={onTypeClick}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

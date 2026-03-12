@@ -9,9 +9,11 @@ interface PokemonGridProps {
   isLoading: boolean;
   isSearching: boolean;
   onPokemonClick: (id: number | string) => void;
+  onTypeClick?: (type: string) => void;
+  selectedType?: string | null;
 }
 
-export const PokemonGrid = memo(({ pokemonList, isLoading, isSearching, onPokemonClick }: PokemonGridProps) => {
+export const PokemonGrid = memo(({ pokemonList, isLoading, isSearching, onPokemonClick, onTypeClick, selectedType }: PokemonGridProps) => {
   if (isLoading && !pokemonList.length) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[40vh]">
@@ -61,6 +63,8 @@ export const PokemonGrid = memo(({ pokemonList, isLoading, isSearching, onPokemo
             <PokemonCard
               pokemon={pokemon}
               onClick={(p) => onPokemonClick(p.id)}
+              onTypeClick={onTypeClick}
+              selectedType={selectedType}
             />
           </motion.div>
         ))}

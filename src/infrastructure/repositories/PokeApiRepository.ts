@@ -10,6 +10,15 @@ interface PokeApiListResponse {
   }>;
 }
 
+interface PokeApiTypeResponse {
+  pokemon: Array<{
+    pokemon: {
+      name: string;
+      url: string;
+    };
+  }>;
+}
+
 export class PokeApiRepository implements IPokemonRepository {
   private readonly baseUrl = 'https://pokeapi.co/api/v2';
   private allPokemonNames: { name: string; url: string }[] | null = null;
@@ -61,6 +70,31 @@ export class PokeApiRepository implements IPokemonRepository {
       .slice(0, 20);
 
     const detailedPromises = filtered.map(async (p) => {
+      // Return from cache if available
+      if (this.pokemonCache.has(p.url)) {
+        return this.pokemonCache.get(p.url)!;
+      }
+
+      const res = await fetch(p.url);
+      const pokemonData = await res.json();
+      const domainPokemon = PokemonMapper.toDomain(pokemonData);
+      
+      // Save to cache
+      this.pokemonCache.set(p.url, domainPokemon);
+      return domainPokemon;
+    });
+
+    return Promise.all(detailedPromises);
+  }
+
+  async getPokemonByType(type: string): Promise<PokemonBase[]> {
+    const response = await fetch(`${this.baseUrl}/type/${type.toLowerCase()}`);
+    const data: PokeApiTypeResponse = await response.json();
+    
+    // Limit results for performance (40 is enough for a quick filter)
+    const limitedResults = data.pokemon.slice(0, 40).map(p => p.pokemon);
+
+    const detailedPromises = limitedResults.map(async (p) => {
       // Return from cache if available
       if (this.pokemonCache.has(p.url)) {
         return this.pokemonCache.get(p.url)!;
