@@ -3,6 +3,7 @@ import type { PokemonBase, PokemonDetail } from '../../domain/models/Pokemon';
 import { PokemonMapper } from '../mappers/PokemonMapper';
 
 interface PokeApiListResponse {
+  count: number;
   results: Array<{
     name: string;
     url: string;
@@ -13,7 +14,7 @@ export class PokeApiRepository implements IPokemonRepository {
   private readonly baseUrl = 'https://pokeapi.co/api/v2';
   private allPokemonNames: { name: string; url: string }[] | null = null;
 
-  async getPokemonList(limit: number, offset: number): Promise<PokemonBase[]> {
+  async getPokemonList(limit: number, offset: number): Promise<{ results: PokemonBase[]; count: number }> {
     const response = await fetch(`${this.baseUrl}/pokemon?limit=${limit}&offset=${offset}`);
     const data: PokeApiListResponse = await response.json();
     
@@ -23,7 +24,8 @@ export class PokeApiRepository implements IPokemonRepository {
       return PokemonMapper.toDomain(pokemonData);
     });
 
-    return Promise.all(detailedPromises);
+    const results = await Promise.all(detailedPromises);
+    return { results, count: data.count };
   }
 
   async getPokemonDetail(idOrName: string | number): Promise<PokemonDetail> {

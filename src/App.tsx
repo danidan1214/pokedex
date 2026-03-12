@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Loader2, Sparkles, X } from 'lucide-react';
+import { Search, Sparkles, X, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { usePokemonList, useSearchPokemon } from './presentation/hooks/usePokemon';
 import { PokemonCard } from './presentation/components/PokemonCard';
 import { PokemonModal } from './presentation/components/PokemonModal';
@@ -9,15 +9,14 @@ import { useDebounce } from './presentation/hooks/useDebounce';
 function App() {
   const [selectedId, setSelectedId] = useState<number | string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(0);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const { 
     data: listData, 
-    fetchNextPage, 
-    hasNextPage, 
-    isFetchingNextPage, 
+    isFetching: isListFetching,
     isLoading: isListLoading 
-  } = usePokemonList(20);
+  } = usePokemonList(page, 20);
 
   const { 
     data: searchResults, 
@@ -31,8 +30,37 @@ function App() {
     if (isSearching) {
       return searchResults || [];
     }
-    return listData?.pages.flatMap(page => page) || [];
+    return listData?.results || [];
   }, [isSearching, searchResults, listData]);
+
+  const totalCount = listData?.count || 0;
+  const totalPages = Math.ceil(totalCount / 20);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 0; i < totalPages; i++) pages.push(i);
+    } else {
+      let start = Math.max(0, page - 2);
+      let end = Math.min(totalPages - 1, page + 2);
+
+      if (page <= 2) {
+        end = 4;
+      } else if (page >= totalPages - 3) {
+        start = totalPages - 5;
+      }
+
+      for (let i = start; i <= end; i++) pages.push(i);
+    }
+    return pages;
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-rose-200">
@@ -142,39 +170,96 @@ function App() {
             >
               <AnimatePresence>
                 {displayPokemon.map((pokemon) => (
-                  <PokemonCard
+                  <motion.div
                     key={pokemon.id}
-                    pokemon={pokemon}
-                    onClick={(p) => setSelectedId(p.id)}
-                  />
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    layout
+                  >
+                    <PokemonCard
+                      pokemon={pokemon}
+                      onClick={(p) => setSelectedId(p.id)}
+                    />
+                  </motion.div>
                 ))}
               </AnimatePresence>
             </motion.div>
 
-            {/* Load More */}
-            {hasNextPage && !isSearching && (
+            {/* Pagination */}
+            {!isSearching && totalPages > 1 && (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mt-20 flex justify-center"
+                className="mt-20 flex flex-col items-center gap-6"
               >
-                <button
-                  onClick={() => fetchNextPage()}
-                  disabled={isFetchingNextPage}
-                  className="group relative px-8 py-4 bg-slate-900 text-white rounded-[2rem] font-bold text-lg overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95 shadow-[0_10px_40px_-10px_rgba(15,23,42,0.5)]"
-                >
-                  <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-rose-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="relative flex items-center gap-3">
-                    {isFetchingNextPage ? (
-                      <>
-                        <Loader2 className="w-6 h-6 animate-spin" />
-                        Atrapando más...
-                      </>
-                    ) : (
-                      'Cargar más Pokémon'
-                    )}
+                <div className="flex items-center gap-2 md:gap-4 flex-wrap justify-center">
+                  <button
+                    onClick={() => handlePageChange(0)}
+                    disabled={page === 0 || isListFetching}
+                    className="p-3 bg-white text-slate-600 rounded-xl border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                    title="Primera página"
+                  >
+                    <ChevronsLeft className="w-5 h-5" />
+                  </button>
+
+                  <button
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 0 || isListFetching}
+                    className="p-3 bg-white text-slate-600 rounded-xl border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                    title="Página anterior"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  
+                  <div className="flex items-center gap-2">
+                    {getPageNumbers().map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => handlePageChange(p)}
+                        disabled={isListFetching}
+                        className={`w-10 h-10 md:w-12 md:h-12 rounded-xl font-bold transition-all active:scale-90 ${
+                          page === p 
+                            ? 'bg-rose-500 text-white shadow-lg shadow-rose-200' 
+                            : 'bg-white text-slate-600 border border-slate-200 hover:border-rose-300 hover:bg-rose-50'
+                        }`}
+                      >
+                        {p + 1}
+                      </button>
+                    ))}
                   </div>
-                </button>
+
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page === totalPages - 1 || isListFetching}
+                    className="p-3 bg-white text-slate-600 rounded-xl border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                    title="Página siguiente"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+
+                  <button
+                    onClick={() => handlePageChange(totalPages - 1)}
+                    disabled={page === totalPages - 1 || isListFetching}
+                    className="p-3 bg-white text-slate-600 rounded-xl border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                    title="Última página"
+                  >
+                    <ChevronsRight className="w-5 h-5" />
+                  </button>
+                </div>
+                
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-slate-400 font-medium text-sm">
+                    Página {page + 1} de {totalPages}
+                  </p>
+                  <div className="h-1 w-48 bg-slate-200 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${((page + 1) / totalPages) * 100}%` }}
+                      className="h-full bg-rose-500"
+                    />
+                  </div>
+                </div>
               </motion.div>
             )}
           </>

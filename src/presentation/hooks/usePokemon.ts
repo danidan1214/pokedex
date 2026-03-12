@@ -1,16 +1,12 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { usePokemonRepository } from './usePokemonRepository';
 
-export const usePokemonList = (limit: number = 20) => {
+export const usePokemonList = (page: number, limit: number = 20) => {
   const repository = usePokemonRepository();
 
-  return useInfiniteQuery({
-    queryKey: ['pokemon-list'],
-    queryFn: ({ pageParam = 0 }) => repository.getPokemonList(limit, pageParam),
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length < limit ? undefined : allPages.length * limit;
-    },
-    initialPageParam: 0,
+  return useQuery({
+    queryKey: ['pokemon-list', page, limit],
+    queryFn: () => repository.getPokemonList(limit, page * limit),
   });
 };
 
