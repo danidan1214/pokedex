@@ -46,7 +46,7 @@ export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick, onTypeClic
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       onClick={() => onClick(pokemon)}
-      className="bg-white rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden flex flex-col group border border-slate-100/50"
+      className="bg-white rounded-[1.5rem] sm:rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden flex flex-col group border border-slate-100/50"
     >
       <div className={`relative w-full pt-[100%] bg-gradient-to-br ${gradient} overflow-hidden`}>
         {/* Decorative background element */}
@@ -54,18 +54,18 @@ export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick, onTypeClic
         <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-black/10 rounded-full blur-2xl" />
         
         {/* ID Number watermark */}
-        <span className="absolute top-4 right-6 text-white/30 font-black text-4xl italic select-none">
+        <span className="absolute top-3 right-4 sm:top-4 sm:right-6 text-white/30 font-black text-2xl sm:text-3xl md:text-4xl italic select-none">
           #{pokemon.id.toString().padStart(3, '0')}
         </span>
 
         {/* Pokemon Image */}
-        <div className="absolute inset-0 flex items-center justify-center p-6">
+        <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6">
           {hasImage ? (
             <motion.img
               src={pokemon.image}
               alt={pokemon.name}
               onError={() => setImageError(true)}
-              className="w-full h-full object-contain filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out z-10"
+              className="max-w-[85%] max-h-[85%] sm:max-w-full sm:max-h-full object-contain filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out z-10"
               loading="lazy"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -73,18 +73,18 @@ export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick, onTypeClic
             />
           ) : (
             <div className="flex flex-col items-center justify-center text-white/70 z-10">
-              <ImageOff className="w-12 h-12 mb-2" />
-              <span className="text-xs font-bold uppercase tracking-tighter">Sin imagen</span>
+              <ImageOff className="w-8 h-8 sm:w-12 sm:h-12 mb-2" />
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-tighter">Sin imagen</span>
             </div>
           )}
         </div>
       </div>
       
-      <div className="p-6 bg-white flex-1 flex flex-col relative z-20 rounded-t-[2rem] -mt-6">
-        <h3 className="text-2xl font-black capitalize text-slate-800 mb-4 tracking-tight">
+      <div className="p-4 sm:p-6 bg-white flex-1 flex flex-col relative z-20 rounded-t-[1.5rem] sm:rounded-t-[2rem] -mt-4 sm:-mt-6">
+        <h3 className="text-xl sm:text-2xl font-black capitalize text-slate-800 mb-3 sm:mb-4 tracking-tight truncate">
           {pokemon.name}
         </h3>
-        <div className="flex flex-wrap gap-2 mt-auto">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-auto">
           {pokemon.types.map((type) => (
             <TypeBadge 
               key={type} 

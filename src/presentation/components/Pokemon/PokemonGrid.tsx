@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SearchX } from 'lucide-react';
 import { PokemonCard } from '../PokemonCard';
+import { PokemonListItem } from '../PokemonListItem';
 import type { PokemonBase } from '../../../domain/models/Pokemon';
 
 interface PokemonGridProps {
@@ -11,9 +12,10 @@ interface PokemonGridProps {
   onPokemonClick: (id: number | string) => void;
   onTypeClick?: (type: string) => void;
   selectedType?: string | null;
+  viewMode: 'grid' | 'list';
 }
 
-export const PokemonGrid = memo(({ pokemonList, isLoading, isSearching, onPokemonClick, onTypeClick, selectedType }: PokemonGridProps) => {
+export const PokemonGrid = memo(({ pokemonList, isLoading, isSearching, onPokemonClick, onTypeClick, selectedType, viewMode }: PokemonGridProps) => {
   if (isLoading && !pokemonList.length) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[40vh]">
@@ -47,29 +49,44 @@ export const PokemonGrid = memo(({ pokemonList, isLoading, isSearching, onPokemo
   }
 
   return (
-    <motion.div 
-      layout
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
-    >
-      <AnimatePresence mode="popLayout">
-        {pokemonList.map((pokemon) => (
+    <AnimatePresence mode="wait">
+      <motion.div 
+        key={viewMode}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className={viewMode === 'grid' 
+          ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8'
+          : 'flex flex-col gap-3 w-full'
+        }
+      >
+        {pokemonList.map((pokemon, index) => (
           <motion.div
-            key={pokemon.id}
+            key={`${viewMode}-${pokemon.id}`}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            layout
+            transition={{ duration: 0.2, delay: index * 0.03 }}
           >
-            <PokemonCard
-              pokemon={pokemon}
-              onClick={(p) => onPokemonClick(p.id)}
-              onTypeClick={onTypeClick}
-              selectedType={selectedType}
-            />
+            {viewMode === 'grid' ? (
+              <PokemonCard
+                pokemon={pokemon}
+                onClick={(p) => onPokemonClick(p.id)}
+                onTypeClick={onTypeClick}
+                selectedType={selectedType}
+              />
+            ) : (
+              <PokemonListItem
+                pokemon={pokemon}
+                onClick={(p) => onPokemonClick(p.id)}
+                onTypeClick={onTypeClick}
+                selectedType={selectedType}
+              />
+            )}
           </motion.div>
         ))}
-      </AnimatePresence>
-    </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 });
 
