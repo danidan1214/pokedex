@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { usePokemonList, useSearchPokemon, usePokemonByType } from '../usePokemon';
 import { useDebounce } from '../useDebounce';
 
@@ -7,6 +7,21 @@ export function usePokemonUI() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [page, setPage] = useState(0);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+  
+  useEffect(() => {
+    // Determine initial view and items per page based on screen size
+    if (typeof window !== 'undefined') {
+      const isMobile = window.innerWidth < 768;
+      setViewMode(isMobile ? 'list' : 'grid');
+      setItemsPerPage(isMobile ? 10 : 20);
+    }
+  }, []);
+  
+  const handleToggleViewMode = useCallback(() => {
+    setViewMode(prev => prev === 'grid' ? 'list' : 'grid');
+  }, []);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const isSearching = debouncedSearchTerm.length > 2;
@@ -16,7 +31,7 @@ export function usePokemonUI() {
     data: listData, 
     isFetching: isListFetching,
     isLoading: isListLoading 
-  } = usePokemonList(page, 20, !isSearching && !selectedType);
+  } = usePokemonList(page, itemsPerPage, !isSearching && !selectedType);
 
   const { 
     data: searchResults, 
@@ -41,7 +56,7 @@ export function usePokemonUI() {
   }, [isSearching, isFilteringByType, searchResults, typeResults, listData]);
 
   const totalCount = listData?.count || 0;
-  const totalPages = Math.ceil(totalCount / 20);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const handlePageChange = useCallback((newPage: number) => {
     setPage(newPage);
@@ -94,5 +109,7 @@ export function usePokemonUI() {
     handleClearType,
     handleSelectPokemon,
     handleCloseModal,
+    viewMode,
+    handleToggleViewMode,
   };
 }

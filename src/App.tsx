@@ -23,6 +23,8 @@ function App() {
     handleTypeClick,
     handleSelectPokemon,
     handleCloseModal,
+    viewMode,
+    handleToggleViewMode,
   } = usePokemonUI();
 
   return (
@@ -78,9 +80,11 @@ function App() {
           onClearSearch={handleClearSearch}
           selectedType={selectedType}
           onTypeClick={handleTypeClick}
+          viewMode={viewMode}
+          onToggleViewMode={handleToggleViewMode}
         />
 
-        <main className="max-w-7xl mx-auto px-4 py-8 md:px-8 pb-32">
+        <main className="max-w-7xl mx-auto px-4 pt-8 pb-12 md:px-8 md:pb-16">
           <PokemonGrid 
             pokemonList={displayPokemon}
             isLoading={isLoading}
@@ -88,6 +92,7 @@ function App() {
             onPokemonClick={handleSelectPokemon}
             onTypeClick={handleTypeClick}
             selectedType={selectedType}
+            viewMode={viewMode}
           />
 
           {!isSearching && !selectedType && (
