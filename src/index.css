@@ -31,3 +31,109 @@ body {
   background-color: #fecdd3; /* rose-200 */
   color: #111827;
 }
+
+/* Blob animations */
+@keyframes blob-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, 30px) scale(1.1); }
+}
+@keyframes blob-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 60px) scale(1.2); }
+}
+@keyframes blob-drift-3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -50px); }
+}
+@keyframes blob-drift-4 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-60px, -20px); }
+}
+
+.animate-blob-1 { animation: blob-drift-1 20s ease-in-out infinite; }
+.animate-blob-2 { animation: blob-drift-2 25s ease-in-out infinite; }
+.animate-blob-3 { animation: blob-drift-3 18s ease-in-out infinite; }
+.animate-blob-4 { animation: blob-drift-4 22s ease-in-out infinite; }
+
+/* Card/entrance animations */
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes img-enter {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-card-enter { animation: card-enter 0.3s ease-out both; }
+.animate-img-enter { animation: img-enter 0.3s ease-out both; }
+.animate-fade-in { animation: fade-in 0.3s ease-out both; }
+.animate-slide-up { animation: slide-up 0.3s ease-out both; }
+
+/* Filter panel expand/collapse */
+.filter-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
+}
+.filter-panel.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.filter-panel > div {
+  overflow: hidden;
+}
+
+/* Scroll indicator fade */
+.scroll-indicator {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+.scroll-indicator.visible {
+  opacity: 1;
+}
+
+/* No scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-blob-1,
+  .animate-blob-2,
+  .animate-blob-3,
+  .animate-blob-4,
+  .animate-card-enter,
+  .animate-img-enter,
+  .animate-fade-in,
+  .animate-slide-up {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Pause blob animations on mobile to save GPU */
+@media (max-width: 767px) {
+  .animate-blob-1,
+  .animate-blob-2,
+  .animate-blob-3,
+  .animate-blob-4 {
+    animation-play-state: paused;
+  }
+}

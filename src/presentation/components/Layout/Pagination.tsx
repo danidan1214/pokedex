@@ -1,6 +1,5 @@
 import { memo, useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface PaginationProps {
   currentPage: number;
@@ -16,14 +15,14 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
     const handleResize = () => {
       setMaxVisiblePages(window.innerWidth < 640 ? 3 : 5);
     };
-    handleResize(); // set initially
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const getPageNumbers = () => {
     const pages = [];
-    
+
     if (totalPages <= maxVisiblePages) {
       for (let i = 0; i < totalPages; i++) pages.push(i);
     } else {
@@ -45,11 +44,7 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
   if (totalPages <= 1) return null;
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="mt-16 sm:mt-20 flex flex-col items-center gap-4 sm:gap-6"
-    >
+    <div className="mt-16 sm:mt-20 flex flex-col items-center gap-4 sm:gap-6 animate-fade-in">
       <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4 justify-center w-full max-w-[100vw] overflow-hidden px-2">
         <button
           onClick={() => onPageChange(0)}
@@ -68,7 +63,7 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
         >
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
-        
+
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {getPageNumbers().map((p) => (
             <button
@@ -76,8 +71,8 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
               onClick={() => onPageChange(p)}
               disabled={isFetching}
               className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl font-bold transition-all active:scale-90 text-sm sm:text-base ${
-                currentPage === p 
-                  ? 'bg-rose-500 text-white shadow-md shadow-rose-200/50' 
+                currentPage === p
+                  ? 'bg-rose-500 text-white shadow-md shadow-rose-200/50'
                   : 'bg-white text-slate-600 border border-slate-200 hover:border-rose-300 hover:bg-rose-50'
               }`}
             >
@@ -104,20 +99,19 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
           <ChevronsRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
       </div>
-      
+
       <div className="flex flex-col items-center gap-2">
         <p className="text-slate-400 font-medium text-xs sm:text-sm">
           Página {currentPage + 1} de {totalPages}
         </p>
         <div className="h-1 w-32 sm:w-48 bg-slate-200 rounded-full overflow-hidden">
-          <motion.div 
-            initial={{ width: 0 }}
-            animate={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
-            className="h-full bg-rose-500"
+          <div
+            className="h-full bg-rose-500 transition-[width] duration-300 ease-out"
+            style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
           />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 });
 

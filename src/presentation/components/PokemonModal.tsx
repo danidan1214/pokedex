@@ -1,35 +1,15 @@
-import React, { useState } from 'react';
+import { memo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Ruler, Weight, Zap, Shield, Heart, Swords, Activity, FastForward, Info, Crown, ImageOff } from 'lucide-react';
 import { usePokemonDetail } from '../hooks/usePokemon';
 import { TypeBadge } from './TypeBadge';
+import { TYPE_COLORS } from '../constants/typeColors';
 
 interface Props {
   pokemonId: number | string | null;
   onClose: () => void;
   onTypeClick?: (type: string) => void;
 }
-
-const typeColors: Record<string, string> = {
-  bug: '#A6B91A',
-  dark: '#705746',
-  dragon: '#6F35FC',
-  electric: '#F7D02C',
-  fairy: '#D685AD',
-  fighting: '#C22E28',
-  fire: '#EE8130',
-  flying: '#A98FF3',
-  ghost: '#705898',
-  grass: '#7AC74C',
-  ground: '#E2BF65',
-  ice: '#96D9D6',
-  normal: '#A8A77A',
-  poison: '#A33EA1',
-  psychic: '#F95587',
-  rock: '#B6A136',
-  steel: '#B7B7CE',
-  water: '#6390F0',
-};
 
 const StatBar: React.FC<{ label: string; value: number; max: number; icon: React.ReactNode; color: string }> = ({ label, value, max, icon, color }) => (
   <div className="mb-4 group">
@@ -54,14 +34,14 @@ const StatBar: React.FC<{ label: string; value: number; max: number; icon: React
   </div>
 );
 
-export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose, onTypeClick }) => {
+export const PokemonModal: React.FC<Props> = memo(({ pokemonId, onClose, onTypeClick }) => {
   const { data: pokemon, isLoading } = usePokemonDetail(pokemonId || '');
   const [imageError, setImageError] = useState(false);
 
   if (!pokemonId) return null;
 
   const mainType = pokemon?.types[0]?.toLowerCase() || 'normal';
-  const mainColor = typeColors[mainType] || '#A8A77A';
+  const mainColor = TYPE_COLORS[mainType] || '#A8A77A';
   const hasImage = pokemon?.image && !imageError;
 
   return (
@@ -98,13 +78,12 @@ export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose, onTypeClick 
           ) : pokemon ? (
             <>
               {/* Left Side - Image & Basic Info */}
-              <div 
+              <div
                 className="md:w-[45%] shrink-0 p-6 pt-10 sm:p-8 md:p-12 flex flex-col items-center justify-center relative overflow-hidden text-white min-h-[35vh] md:min-h-0"
                 style={{ backgroundColor: mainColor }}
               >
-                {/* Decorative background circle */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] md:w-[120%] aspect-square bg-white/10 rounded-full blur-2xl md:blur-3xl" />
-                
+
                 <span className="absolute top-4 left-4 sm:top-6 sm:left-8 text-white/30 font-black text-5xl sm:text-6xl md:text-8xl italic select-none">
                   #{pokemon.id.toString().padStart(3, '0')}
                 </span>
@@ -120,6 +99,8 @@ export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose, onTypeClick 
                       src={pokemon.image}
                       alt={pokemon.name}
                       onError={() => setImageError(true)}
+                      width="280"
+                      height="280"
                       className="w-full h-full object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.3)] md:drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)]"
                     />
                   ) : (
@@ -146,9 +127,9 @@ export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose, onTypeClick 
                   </h2>
                   <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
                     {pokemon.types.map((type) => (
-                      <TypeBadge 
-                        key={type} 
-                        type={type} 
+                      <TypeBadge
+                        key={type}
+                        type={type}
                         onClick={(t) => {
                           if (onTypeClick) {
                             onTypeClick(t);
@@ -225,4 +206,6 @@ export const PokemonModal: React.FC<Props> = ({ pokemonId, onClose, onTypeClick 
       </div>
     </AnimatePresence>
   );
-};
+});
+
+PokemonModal.displayName = 'PokemonModal';

@@ -9,17 +9,21 @@ export function usePokemonUI() {
   const [page, setPage] = useState(0);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  
+
   useEffect(() => {
-    // Determine initial view and items per page based on screen size
-    if (typeof window !== 'undefined') {
+    const handleResize = () => {
       const isMobile = window.innerWidth < 768;
       setViewMode(isMobile ? 'list' : 'grid');
       setItemsPerPage(isMobile ? 10 : 20);
-    }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
-  
+
   const handleToggleViewMode = useCallback(() => {
+    // On mobile, only list mode is allowed
+    if (window.innerWidth < 768) return;
     setViewMode(prev => prev === 'grid' ? 'list' : 'grid');
   }, []);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
@@ -27,15 +31,15 @@ export function usePokemonUI() {
   const isSearching = debouncedSearchTerm.length > 2;
   const isFilteringByType = !!selectedType && !isSearching;
 
-  const { 
-    data: listData, 
+  const {
+    data: listData,
     isFetching: isListFetching,
-    isLoading: isListLoading 
+    isLoading: isListLoading
   } = usePokemonList(page, itemsPerPage, !isSearching && !selectedType);
 
-  const { 
-    data: searchResults, 
-    isLoading: isSearchLoading 
+  const {
+    data: searchResults,
+    isLoading: isSearchLoading
   } = useSearchPokemon(debouncedSearchTerm, isSearching);
 
   const {
@@ -43,10 +47,10 @@ export function usePokemonUI() {
     isLoading: isTypeLoading
   } = usePokemonByType(selectedType || '', isFilteringByType);
 
-  const isLoading = isSearching 
-    ? isSearchLoading 
-    : isFilteringByType 
-      ? isTypeLoading 
+  const isLoading = isSearching
+    ? isSearchLoading
+    : isFilteringByType
+      ? isTypeLoading
       : isListLoading;
 
   const displayPokemon = useMemo(() => {
@@ -65,7 +69,7 @@ export function usePokemonUI() {
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
-    setSelectedType(null); // Clear type filter when searching
+    setSelectedType(null);
     setPage(0);
   }, []);
 
@@ -75,12 +79,8 @@ export function usePokemonUI() {
 
   const handleTypeClick = useCallback((type: string) => {
     setSelectedType(prev => prev === type ? null : type);
-    setSearchTerm(''); // Clear search when filtering by type
+    setSearchTerm('');
     setPage(0);
-  }, []);
-
-  const handleClearType = useCallback(() => {
-    setSelectedType(null);
   }, []);
 
   const handleSelectPokemon = useCallback((id: number | string) => {
@@ -106,7 +106,6 @@ export function usePokemonUI() {
     handleSearchChange,
     handleClearSearch,
     handleTypeClick,
-    handleClearType,
     handleSelectPokemon,
     handleCloseModal,
     viewMode,

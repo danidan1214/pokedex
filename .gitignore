@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Vite cache
+.vite
+
+# Tunnel tools (ngrok, cloudflared, localtunnel)
+cloudflared
+ngrok
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
