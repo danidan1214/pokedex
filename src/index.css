@@ -78,19 +78,29 @@ body {
 .animate-fade-in { animation: fade-in 0.3s ease-out both; }
 .animate-slide-up { animation: slide-up 0.3s ease-out both; }
 
-/* Filter panel expand/collapse */
+/* Filter panel expand/collapse — overlays content */
 .filter-panel {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s ease-out, opacity 0.3s ease-out;
+  transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease-out;
   opacity: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  pointer-events: none;
 }
 .filter-panel.open {
   grid-template-rows: 1fr;
   opacity: 1;
+  pointer-events: auto;
 }
 .filter-panel > div {
   overflow: hidden;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 12px 30px -8px rgba(15,23,42,0.1);
 }
 
 /* Scroll indicator fade */

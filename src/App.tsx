@@ -54,7 +54,7 @@ function App() {
           onToggleViewMode={handleToggleViewMode}
         />
 
-        <main className="max-w-7xl mx-auto px-4 pt-8 pb-12 md:px-8 md:pb-16">
+        <main className="max-w-7xl mx-auto px-4 pt-4 pb-12 md:px-8 md:pb-16">
           <PokemonGrid 
             pokemonList={displayPokemon}
             isLoading={isLoading}
