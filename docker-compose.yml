@@ -1,0 +1,10 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pokedex:latest
+    container_name: pokedex
+    ports:
+      - "8080:80"
+    restart: unless-stopped

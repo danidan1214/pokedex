@@ -40,12 +40,33 @@ src/
 
 ## 📦 Getting Started
 
-### Prerequisites
+### 🐳 Docker (recommended)
+
+The project is dockerized: a multi-stage build that compiles with Node and serves the app with **nginx** (a production-optimized web server, much lighter and faster than serving with Node).
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/pokedex.git
+   cd pokedex
+   ```
+2. Run with Docker:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Open `http://localhost:8080`
+4. Stop:
+   ```bash
+   docker compose down
+   ```
+
+### Without Docker (local development)
+
+#### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v20 or higher recommended)
 - [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
 
-### Installation
+#### Installation
 
 1. Clone the repository:
    ```bash
