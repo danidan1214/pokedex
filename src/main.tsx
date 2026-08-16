@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PokemonProvider } from './presentation/context/PokemonProvider'
+import { ThemeProvider } from './presentation/context/ThemeProvider'
 import App from './App'
 import './index.css'
 
@@ -18,9 +19,11 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <PokemonProvider>
-        <App />
-      </PokemonProvider>
+      <ThemeProvider>
+        <PokemonProvider>
+          <App />
+        </PokemonProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>,
 )

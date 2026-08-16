@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const TypeBadge: React.FC<Props> = memo(({ type, onClick, isSelected, large }) => {
-  const colorClass = TYPE_BG_CLASSES[type.toLowerCase()] || 'bg-slate-400 text-white';
+  const colorClass = TYPE_BG_CLASSES[type.toLowerCase()] || 'bg-slate-400 dark:bg-slate-600 text-white';
   const isClickable = !!onClick;
 
   return (
