@@ -13,6 +13,7 @@ A highly interactive and performant Pokédex built with **React 19**, **TypeScri
 - **Responsive Design**: Optimized for mobile, tablet, and desktop, with a list view and lightweight 96px sprites on mobile.
 - **Fluid Animations**: Smooth transitions and micro-interactions powered by CSS, with Framer Motion reserved for the detail modal.
 - **Type-Safe**: Fully typed with TypeScript for a robust developer experience.
+- **Dark Mode**: A complete dark theme with a three-state toggle (Light / Dark / System). It defaults to the OS appearance, persists the user's choice in `localStorage` (`pokedex-theme`), and applies the theme before first paint to avoid a flash of the wrong theme on reload.
 
 ## 🛠️ Tech Stack
 
@@ -40,6 +41,17 @@ src/
 ```
 
 The list, search and type-filter operations read from a **pre-built local dataset** (`public/data/pokemon.min.json`, ~25 KB gzipped) so they require zero network requests at runtime. Only the detail modal fetches from PokéAPI on demand.
+
+## 🌗 Dark Mode
+
+The app ships a full dark theme driven by a Tailwind v4 class-based `dark:` variant (a `.dark` class on `<html>`) rather than `prefers-color-scheme`, so the user can override the system default.
+
+- **Three states**: Light, Dark and System. A segmented control in the header (desktop) and a cycling button (mobile) switch between them.
+- **Default**: `System` — follows the OS appearance and reacts live to OS theme changes without a reload.
+- **Persistence**: the choice is stored in `localStorage` under the `pokedex-theme` key.
+- **No FOUC**: a blocking inline script in `index.html` applies the stored/system theme before first paint, so reloading in dark never flashes the light theme.
+
+The theme logic lives in `src/presentation/context/ThemeContext.ts` + `ThemeProvider.tsx` and the `useTheme` hook. Pokémon-type colors and brand accents stay the same in both themes; only neutral surfaces, text and borders flip.
 
 ## 📦 Getting Started
 
