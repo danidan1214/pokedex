@@ -21,7 +21,7 @@ export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick, onTypeClic
   return (
     <div
       onClick={() => onClick(pokemon.id)}
-      className="bg-white rounded-[1.5rem] sm:rounded-[2rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer overflow-hidden flex flex-col group border border-slate-100/50 animate-card-enter"
+      className="bg-white dark:bg-slate-900 rounded-[1.5rem] sm:rounded-[2rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer overflow-hidden flex flex-col group border border-slate-100/50 dark:border-slate-800/50 animate-card-enter"
     >
       <div className={`relative w-full pt-[100%] bg-gradient-to-br ${gradient} overflow-hidden`}>
         <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-white/20 rounded-full blur-2xl" />
@@ -52,8 +52,8 @@ export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick, onTypeClic
         </div>
       </div>
 
-      <div className="p-4 sm:p-6 bg-white flex-1 flex flex-col relative z-20 rounded-t-[1.5rem] sm:rounded-t-[2rem] -mt-4 sm:-mt-6">
-        <h3 className="text-xl sm:text-2xl font-black capitalize text-slate-800 mb-3 sm:mb-4 tracking-tight truncate">
+      <div className="p-4 sm:p-6 bg-white dark:bg-slate-900 flex-1 flex flex-col relative z-20 rounded-t-[1.5rem] sm:rounded-t-[2rem] -mt-4 sm:-mt-6">
+        <h3 className="text-xl sm:text-2xl font-black capitalize text-slate-800 dark:text-slate-100 mb-3 sm:mb-4 tracking-tight truncate">
           {pokemon.name}
         </h3>
         <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-auto">

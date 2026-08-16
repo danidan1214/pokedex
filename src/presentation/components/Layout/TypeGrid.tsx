@@ -75,7 +75,7 @@ export const TypeGrid: React.FC<TypeGridProps> = memo(({ selectedType, onTypeCli
               {type.label}
             </span>
             {isSelected && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full shadow-md flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-white dark:bg-slate-900 rounded-full shadow-md flex items-center justify-center">
                 <span className="text-rose-500 text-[10px] font-black leading-none">✓</span>
               </span>
             )}

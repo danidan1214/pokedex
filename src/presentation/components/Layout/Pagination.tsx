@@ -49,7 +49,7 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
         <button
           onClick={() => onPageChange(0)}
           disabled={currentPage === 0 || isFetching}
-          className="p-2 sm:p-3 bg-white text-slate-600 rounded-lg sm:rounded-xl border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center shrink-0"
+          className="p-2 sm:p-3 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center shrink-0"
           title="Primera página"
         >
           <ChevronsLeft className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -58,7 +58,7 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 0 || isFetching}
-          className="p-2 sm:p-3 bg-white text-slate-600 rounded-lg sm:rounded-xl border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center shrink-0"
+          className="p-2 sm:p-3 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center shrink-0"
           title="Página anterior"
         >
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -73,7 +73,7 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
               className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl font-bold transition-all active:scale-90 text-sm sm:text-base ${
                 currentPage === p
                   ? 'bg-rose-500 text-white shadow-md shadow-rose-200/50'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-rose-300 hover:bg-rose-50'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950'
               }`}
             >
               {p + 1}
@@ -84,7 +84,7 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages - 1 || isFetching}
-          className="p-2 sm:p-3 bg-white text-slate-600 rounded-lg sm:rounded-xl border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center shrink-0"
+          className="p-2 sm:p-3 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center shrink-0"
           title="Página siguiente"
         >
           <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -93,7 +93,7 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
         <button
           onClick={() => onPageChange(totalPages - 1)}
           disabled={currentPage === totalPages - 1 || isFetching}
-          className="p-2 sm:p-3 bg-white text-slate-600 rounded-lg sm:rounded-xl border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center shrink-0"
+          className="p-2 sm:p-3 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-rose-300 transition-all shadow-sm active:scale-95 flex items-center justify-center shrink-0"
           title="Última página"
         >
           <ChevronsRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -101,10 +101,10 @@ export const Pagination = memo(({ currentPage, totalPages, onPageChange, isFetch
       </div>
 
       <div className="flex flex-col items-center gap-2">
-        <p className="text-slate-400 font-medium text-xs sm:text-sm">
+        <p className="text-slate-400 dark:text-slate-500 font-medium text-xs sm:text-sm">
           Página {currentPage + 1} de {totalPages}
         </p>
-        <div className="h-1 w-32 sm:w-48 bg-slate-200 rounded-full overflow-hidden">
+        <div className="h-1 w-32 sm:w-48 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-rose-500 transition-[width] duration-300 ease-out"
             style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}

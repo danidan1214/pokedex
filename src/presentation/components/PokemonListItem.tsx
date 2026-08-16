@@ -24,7 +24,7 @@ export const PokemonListItem: React.FC<Props> = memo(({ pokemon, onClick, onType
   return (
     <div
       onClick={() => onClick(pokemon.id)}
-      className="bg-white rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 cursor-pointer flex items-center p-3 border border-slate-100/50 animate-card-enter"
+      className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 cursor-pointer flex items-center p-3 border border-slate-100/50 dark:border-slate-800/50 animate-card-enter"
     >
       <div className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl ${bgColor} flex-shrink-0 flex items-center justify-center overflow-hidden mr-4`}>
         {hasImage ? (
@@ -45,10 +45,10 @@ export const PokemonListItem: React.FC<Props> = memo(({ pokemon, onClick, onType
 
       <div className="flex-1 flex flex-col justify-center min-w-0">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-lg sm:text-xl font-black capitalize text-slate-800 truncate pr-2">
+          <h3 className="text-lg sm:text-xl font-black capitalize text-slate-800 dark:text-slate-100 truncate pr-2">
             {pokemon.name}
           </h3>
-          <span className="text-slate-400 font-bold text-sm sm:text-base italic whitespace-nowrap">
+          <span className="text-slate-400 dark:text-slate-500 font-bold text-sm sm:text-base italic whitespace-nowrap">
             #{pokemon.id.toString().padStart(3, '0')}
           </span>
         </div>
