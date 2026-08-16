@@ -10,18 +10,27 @@ interface LocalDataset {
 export class PokeApiRepository implements IPokemonRepository {
   private readonly baseUrl = 'https://pokeapi.co/api/v2';
   private localDataset: LocalDataset | null = null;
+  private localDatasetPromise: Promise<LocalDataset> | null = null;
 
   /**
    * Loads the minimal local dataset (one request, ~25 KB gzipped) and caches
    * it for the session. This replaces the previous N+1 detail fan-out that
    * downloaded ~270 KB per pokemon just to render the list.
+   *
+   * The in-flight promise is cached too so concurrent callers (e.g. when the
+   * items-per-page state changes right after mount) share a single request.
    */
-  private async getLocalDataset(): Promise<LocalDataset> {
-    if (this.localDataset) return this.localDataset;
-    const response = await fetch('/data/pokemon.min.json');
-    const data = (await response.json()) as LocalDataset;
-    this.localDataset = data;
-    return data;
+  private getLocalDataset(): Promise<LocalDataset> {
+    if (this.localDataset) return Promise.resolve(this.localDataset);
+    if (!this.localDatasetPromise) {
+      this.localDatasetPromise = fetch('/data/pokemon.min.json')
+        .then((response) => response.json())
+        .then((data) => {
+          this.localDataset = data as LocalDataset;
+          return data as LocalDataset;
+        });
+    }
+    return this.localDatasetPromise;
   }
 
   async getPokemonList(limit: number, offset: number): Promise<{ results: PokemonBase[]; count: number }> {
