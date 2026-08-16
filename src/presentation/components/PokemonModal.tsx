@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Ruler, Weight, Zap, Shield, Heart, Swords, Activity, FastForward, Info, Crown, ImageOff } from 'lucide-react';
 import { usePokemonDetail } from '../hooks/usePokemon';
@@ -38,26 +38,43 @@ export const PokemonModal: React.FC<Props> = memo(({ pokemonId, onClose, onTypeC
   const { data: pokemon, isLoading } = usePokemonDetail(pokemonId || '');
   const [imageError, setImageError] = useState(false);
 
-  if (!pokemonId) return null;
+  // Lock body scroll while the modal is open. The fixed overlay only covers
+  // the viewport visually; without this the document behind still scrolls on
+  // wheel/touch events (most noticeable on mobile).
+  useEffect(() => {
+    if (!pokemonId) return;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [pokemonId]);
 
   const mainType = pokemon?.types[0]?.toLowerCase() || 'normal';
   const mainColor = TYPE_COLORS[mainType] || '#A8A77A';
   const hasImage = pokemon?.image && !imageError;
 
+  // Render conditionally INSIDE AnimatePresence so the exit animation runs
+  // when pokemonId turns null. A bare early `return null` here would unmount
+  // the subtree instantly and AnimatePresence would never animate the exit.
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0"
-          onClick={onClose}
-        />
+      {pokemonId && (
+        <div key="pokemon-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
+            onClick={onClose}
+            // Prevent touch drag from scrolling the background on iOS, where
+            // body overflow:hidden alone does not fully stop rubber-band scroll.
+            onTouchMove={(e) => e.preventDefault()}
+          />
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 30 }}
+          exit={{ opacity: 0, scale: 0.98, y: 10, transition: { duration: 0.18, ease: 'easeIn' } }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
           className="relative w-full max-w-4xl bg-white rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl h-auto max-h-[90vh] flex flex-col md:flex-row z-10"
         >
@@ -101,7 +118,8 @@ export const PokemonModal: React.FC<Props> = memo(({ pokemonId, onClose, onTypeC
                       onError={() => setImageError(true)}
                       width="280"
                       height="280"
-                      className="w-full h-full object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.3)] md:drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)]"
+                      draggable={false}
+                      className="w-full h-full object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.3)] md:drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)] select-none pointer-events-none"
                     />
                   ) : (
                     <div className="flex flex-col items-center justify-center text-white/50">
@@ -203,7 +221,8 @@ export const PokemonModal: React.FC<Props> = memo(({ pokemonId, onClose, onTypeC
             </>
           ) : null}
         </motion.div>
-      </div>
+        </div>
+      )}
     </AnimatePresence>
   );
 });
