@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gen:data": "node scripts/generate-pokemon-data.mjs",
+    "verify:data": "node scripts/verify-dataset.mjs",
+    "test:e2e": "node scripts/e2e-smoke.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
@@ -28,6 +31,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "playwright": "^1.62.1",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
     "typescript": "~5.9.3",

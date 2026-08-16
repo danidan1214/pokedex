@@ -16,7 +16,10 @@ export const PokemonListItem: React.FC<Props> = memo(({ pokemon, onClick, onType
   const mainType = pokemon.types[0]?.toLowerCase() || 'normal';
   const bgColor = TYPE_BG_CLASSES[mainType] || 'bg-slate-400';
 
-  const hasImage = pokemon.image && !imageError;
+  // Prefer the tiny 96px sprite for the list/mobile thumbnail to keep the
+  // per-card image payload at ~0.5 KB instead of the 512px artwork.
+  const thumbSrc = pokemon.sprite || pokemon.image;
+  const hasImage = thumbSrc && !imageError;
 
   return (
     <div
@@ -26,7 +29,7 @@ export const PokemonListItem: React.FC<Props> = memo(({ pokemon, onClick, onType
       <div className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl ${bgColor} flex-shrink-0 flex items-center justify-center overflow-hidden mr-4`}>
         {hasImage ? (
           <img
-            src={pokemon.image}
+            src={thumbSrc}
             alt={pokemon.name}
             onError={() => setImageError(true)}
             width="64"

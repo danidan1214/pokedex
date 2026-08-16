@@ -34,6 +34,14 @@ interface ApiPokemonDetail extends ApiPokemonBase {
   }>;
 }
 
+export interface LocalPokemonEntry {
+  id: number;
+  name: string;
+  types: string[];
+  sprite: string;
+  image: string;
+}
+
 interface ApiSpecies {
   is_legendary: boolean;
   is_mythic: boolean;
@@ -52,6 +60,16 @@ export class PokemonMapper {
       name: apiData.name,
       image: apiData.sprites.other['official-artwork'].front_default || apiData.sprites.front_default,
       types: apiData.types.map((t) => t.type.name),
+    };
+  }
+
+  static fromLocal(entry: LocalPokemonEntry): PokemonBase {
+    return {
+      id: entry.id,
+      name: entry.name,
+      image: entry.image,
+      sprite: entry.sprite,
+      types: entry.types,
     };
   }
 
