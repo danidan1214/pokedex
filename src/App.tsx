@@ -29,7 +29,7 @@ function App() {
   } = usePokemonUI();
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-rose-200 relative overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 selection:bg-rose-200 dark:selection:bg-rose-500/30 relative overflow-x-hidden">
       {/* Animated Background Blobs */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-rose-400/20 rounded-full blur-[60px] md:blur-[120px] animate-blob-1" />
@@ -38,8 +38,8 @@ function App() {
         <div className="absolute bottom-[20%] right-[-5%] w-[200px] h-[200px] md:w-[400px] md:h-[400px] bg-amber-400/10 rounded-full blur-[60px] md:blur-[100px] animate-blob-4" />
 
         {/* Subtle Grid Texture */}
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '32px 32px' }}
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
+          style={{ backgroundImage: 'radial-gradient(var(--grid-dot) 1px, transparent 1px)', backgroundSize: '32px 32px' }}
         />
       </div>
 
