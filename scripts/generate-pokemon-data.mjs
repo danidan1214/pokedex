@@ -13,8 +13,6 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const BASE_URL = 'https://pokeapi.co/api/v2';
-const SPRITE_BASE =
-  'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
 const CONCURRENCY = 20;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -35,12 +33,23 @@ async function fetchJson(url, retries = 3) {
   }
 }
 
-function buildUrls(id) {
+/**
+ * Picks the image URLs from the actual sprites the API returns (guaranteed to
+ * resolve, unlike constructed-by-id URLs which 404 for some forms such as
+ * pikachu-rock-star whose "home" variant does not exist).
+ */
+function pickSprites(data) {
+  const sprites = data.sprites ?? {};
+  const artwork = sprites.other?.['official-artwork']?.front_default;
+  const home = sprites.other?.home?.front_default;
+  const front = sprites.front_default;
+
   return {
     // 96px sprite, ~0.5 KB: ideal for list/mobile thumbnails
-    sprite: `${SPRITE_BASE}/${id}.png`,
-    // 512px home artwork, ~140 KB: used for the grid view on desktop
-    image: `${SPRITE_BASE}/other/home/${id}.png`,
+    sprite: front ?? artwork ?? '',
+    // lightest available high-res image for the desktop grid: home (512px)
+    // falls back to official-artwork (475px) and then the 96px sprite
+    image: home ?? artwork ?? front ?? '',
   };
 }
 
@@ -51,7 +60,7 @@ async function mapDetail(url) {
     id: data.id,
     name: data.name,
     types,
-    ...buildUrls(data.id),
+    ...pickSprites(data),
   };
 }
 

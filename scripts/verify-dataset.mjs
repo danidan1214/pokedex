@@ -48,21 +48,24 @@ console.log('\n[1] Dataset structure (aggregate over all entries)');
   const ids = new Set();
   const names = new Set();
   let bad = 0;
+  let emptyImage = 0;
   for (const p of DATASET.pokemon) {
-    const ok =
-      typeof p.id === 'number' && p.id > 0 &&
-      typeof p.name === 'string' && p.name.length > 0 &&
-      Array.isArray(p.types) && p.types.length > 0 &&
-      p.types.every((t) => VALID_TYPES.has(t.toLowerCase())) &&
-      typeof p.sprite === 'string' && p.sprite.startsWith('https://') &&
-      typeof p.image === 'string' && p.image.startsWith('https://') &&
-      !ids.has(p.id) && !names.has(p.name);
-    if (!ok) bad++;
+    const okId = typeof p.id === 'number' && p.id > 0;
+    const okName = typeof p.name === 'string' && p.name.length > 0;
+    const okTypes = Array.isArray(p.types) && p.types.length > 0 && p.types.every((t) => VALID_TYPES.has(t.toLowerCase()));
+    // sprite/image are strings; a few forms have no sprite at all (empty).
+    const okSprite = typeof p.sprite === 'string';
+    const okImage = typeof p.image === 'string';
+    if (!p.image) emptyImage++;
+    // the base roster (id <= 1025) must always have real sprite + image urls
+    const baseHasUrls = p.id > 1025 || (!!p.sprite && p.sprite.startsWith('https://') && !!p.image && p.image.startsWith('https://'));
+    if (!(okId && okName && okTypes && okSprite && okImage && baseHasUrls && !ids.has(p.id) && !names.has(p.name))) bad++;
     ids.add(p.id);
     names.add(p.name);
   }
-  assert(bad === 0, `all ${DATASET.pokemon.length} entries valid (id, name, types, sprite, image, unique)`);
+  assert(bad === 0, `all ${DATASET.pokemon.length} entries valid (id, name, types, sprite/image strings, unique)`);
   assert(DATASET.count === DATASET.pokemon.length, `count field matches entries (${DATASET.pokemon.length})`);
+  assert(emptyImage <= 20, `only a few forms lack a sprite image (${emptyImage}), matches source behaviour`);
 }
 
 console.log('\n[2] Dataset coverage (parity with PokeAPI pokemon endpoint)');
