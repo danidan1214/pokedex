@@ -14,7 +14,7 @@ interface Props {
 export const PokemonListItem: React.FC<Props> = memo(({ pokemon, onClick, onTypeClick, selectedType }) => {
   const [imageError, setImageError] = useState(false);
   const mainType = pokemon.types[0]?.toLowerCase() || 'normal';
-  const bgColor = TYPE_BG_CLASSES[mainType] || 'bg-slate-400';
+  const bgColor = TYPE_BG_CLASSES[mainType] || 'bg-slate-400 dark:bg-slate-600';
 
   // Prefer the tiny 96px sprite for the list/mobile thumbnail to keep the
   // per-card image payload at ~0.5 KB instead of the 512px artwork.
