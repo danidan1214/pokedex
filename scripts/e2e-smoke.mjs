@@ -63,11 +63,13 @@ await desktop.waitForTimeout(600);
 
 console.log('\n[desktop] type filter stays offline');
 api.reset();
-await desktop.locator('button', { hasText: 'Tipos' }).first().click();
+await desktop.locator('button', { hasText: 'Tipos' }).filter({ visible: true }).first().click();
 await desktop.waitForTimeout(300);
-await desktop.locator('button', { hasText: 'Fuego' }).first().click();
+await desktop.locator('button', { hasText: 'Fuego' }).filter({ visible: true }).first().click();
 await desktop.waitForTimeout(500);
 assert((await desktop.locator('h3').count()) > 0, 'type "fire" shows results');
+assert((await desktop.locator('h3', { hasText: 'charmander' }).count()) > 0, 'type "fire" shows charmander');
+assert((await desktop.locator('h3', { hasText: 'bulbasaur' }).count()) === 0, 'type "fire" excludes bulbasaur');
 assert(api.since() === 0, `type filter did not hit pokeapi.co (got ${api.since()})`);
 
 console.log('\n[desktop] modal fetches detail (expected, one pokemon)');
@@ -112,6 +114,16 @@ assert(heavyImgs === 0, `mobile list has zero heavy artwork images (got ${heavyI
 // Confirm a sprite src is the lightweight path (no /other/).
 const oneSrc = await mobile.locator('img[src*="/sprites/pokemon/"]').first().getAttribute('src');
 assert(oneSrc.includes('/sprites/pokemon/') && !oneSrc.includes('/other/'), `sprite src is the 96px variant (${oneSrc})`);
+
+console.log('\n[mobile] type filter via bottom sheet');
+mApi.reset();
+await mobile.locator('button', { hasText: 'Tipos' }).filter({ visible: true }).first().click();
+await mobile.waitForTimeout(300);
+await mobile.locator('button', { hasText: 'Fuego' }).filter({ visible: true }).first().click();
+await mobile.waitForTimeout(500);
+assert((await mobile.locator('h3', { hasText: 'charmander' }).count()) > 0, 'mobile type "fire" shows charmander');
+assert((await mobile.locator('h3', { hasText: 'bulbasaur' }).count()) === 0, 'mobile type "fire" excludes bulbasaur');
+assert(mApi.since() === 0, `mobile type filter did not hit pokeapi.co (got ${mApi.since()})`);
 
 await browser.close();
 console.log(`\n${failures === 0 ? '✅ All e2e assertions passed' : `❌ ${failures} e2e assertion(s) failed`}`);

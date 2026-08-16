@@ -7,23 +7,22 @@ export function usePokemonUI() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [page, setPage] = useState(0);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
-  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(
+    () => (typeof window !== 'undefined' && window.innerWidth < 768 ? 'list' : 'grid'),
+  );
+  const [itemsPerPage, setItemsPerPage] = useState(
+    () => (typeof window !== 'undefined' && window.innerWidth < 768 ? 10 : 20),
+  );
 
   useEffect(() => {
     const handleResize = () => {
-      const isMobile = window.innerWidth < 768;
-      setViewMode(isMobile ? 'list' : 'grid');
-      setItemsPerPage(isMobile ? 10 : 20);
+      setItemsPerPage(window.innerWidth < 768 ? 10 : 20);
     };
-    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleToggleViewMode = useCallback(() => {
-    // On mobile, only list mode is allowed
-    if (window.innerWidth < 768) return;
     setViewMode(prev => prev === 'grid' ? 'list' : 'grid');
   }, []);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
