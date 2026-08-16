@@ -118,7 +118,8 @@ export const PokemonModal: React.FC<Props> = memo(({ pokemonId, onClose, onTypeC
                       onError={() => setImageError(true)}
                       width="280"
                       height="280"
-                      className="w-full h-full object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.3)] md:drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)]"
+                      draggable={false}
+                      className="w-full h-full object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.3)] md:drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)] select-none pointer-events-none"
                     />
                   ) : (
                     <div className="flex flex-col items-center justify-center text-white/50">

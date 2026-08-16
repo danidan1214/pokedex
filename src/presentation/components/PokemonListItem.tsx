@@ -34,7 +34,8 @@ export const PokemonListItem: React.FC<Props> = memo(({ pokemon, onClick, onType
             onError={() => setImageError(true)}
             width="64"
             height="64"
-            className="w-4/5 h-4/5 object-contain filter drop-shadow-md z-10"
+            draggable={false}
+            className="w-4/5 h-4/5 object-contain filter drop-shadow-md z-10 select-none pointer-events-none"
             loading="lazy"
           />
         ) : (

@@ -39,7 +39,8 @@ export const PokemonCard: React.FC<Props> = memo(({ pokemon, onClick, onTypeClic
               onError={() => setImageError(true)}
               width="96"
               height="96"
-              className="max-w-[85%] max-h-[85%] sm:max-w-full sm:max-h-full object-contain filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out z-10 animate-img-enter"
+              draggable={false}
+              className="max-w-[85%] max-h-[85%] sm:max-w-full sm:max-h-full object-contain filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out z-10 animate-img-enter select-none pointer-events-none"
               loading="lazy"
             />
           ) : (
