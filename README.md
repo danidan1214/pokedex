@@ -6,11 +6,12 @@ A highly interactive and performant Pokédex built with **React 19**, **TypeScri
 
 ## 🚀 Features
 
-- **Infinite Scrolling**: Seamlessly explore the Pokémon world with efficient data fetching using TanStack Query.
-- **Real-time Search**: Debounced search functionality to find your favorite Pokémon by name or ID.
-- **Detailed View**: Interactive modal with comprehensive stats, types, and high-quality sprites.
-- **Responsive Design**: Optimized for mobile, tablet, and desktop viewing.
-- **Fluid Animations**: Smooth transitions and micro-interactions powered by Framer Motion.
+- **Paginated Browsing**: Explore the Pokémon world with efficient pagination driven by a pre-built local dataset — no per-pokémon network requests at runtime.
+- **Real-time Search**: Debounced search to find Pokémon by name or ID, resolved instantly from the local dataset.
+- **Type Filtering**: Filter by Pokémon type, computed client-side from the local dataset.
+- **Detailed View**: Interactive modal with comprehensive stats, types, and high-quality sprites, fetched on demand from PokéAPI.
+- **Responsive Design**: Optimized for mobile, tablet, and desktop, with a list view and lightweight 96px sprites on mobile.
+- **Fluid Animations**: Smooth transitions and micro-interactions powered by CSS, with Framer Motion reserved for the detail modal.
 - **Type-Safe**: Fully typed with TypeScript for a robust developer experience.
 
 ## 🛠️ Tech Stack
@@ -20,8 +21,8 @@ A highly interactive and performant Pokédex built with **React 19**, **TypeScri
 - **State Management & Data Fetching**: [TanStack Query v5](https://tanstack.com/query/latest)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Icons**: [Lucide React](https://lucide.dev/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **API**: [PokéAPI](https://pokeapi.co/)
+- **Animations**: CSS keyframes, plus [Framer Motion](https://www.framer.com/motion/) in the detail modal
+- **Data**: A pre-built local dataset (`public/data/pokemon.min.json`) powers list, search and type filtering; [PokéAPI](https://pokeapi.co/) is used for the detail modal and as the source for generating the dataset
 
 ## 🏗️ Architecture
 
@@ -34,9 +35,11 @@ This project implements a **Clean Architecture** (Domain-Driven Design inspired)
 ```text
 src/
 ├── domain/           # Models & Repository Interfaces
-├── infrastructure/   # API implementations & Mappers
+├── infrastructure/   # Repository implementation & Mappers
 └── presentation/     # Components, Hooks, Contexts & Styles
 ```
+
+The list, search and type-filter operations read from a **pre-built local dataset** (`public/data/pokemon.min.json`, ~25 KB gzipped) so they require zero network requests at runtime. Only the detail modal fetches from PokéAPI on demand.
 
 ## 📦 Getting Started
 
@@ -91,6 +94,9 @@ The project is dockerized: a multi-stage build that compiles with Node and serve
 - `npm run build`: Compiles the project for production.
 - `npm run lint`: Runs ESLint for code quality checks.
 - `npm run preview`: Previews the production build locally.
+- `npm run gen:data`: Regenerates the local Pokémon dataset from PokéAPI (one-time build step; the result is committed under `public/data/`).
+- `npm run verify:data`: Validates the dataset structure, coverage and the list/search/type logic.
+- `npm run test:e2e`: Runs the end-to-end smoke test against the preview build (requires Playwright's Chromium installed).
 
 ---
 
