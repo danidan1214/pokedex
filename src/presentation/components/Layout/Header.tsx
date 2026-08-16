@@ -69,8 +69,8 @@ export const Header = memo(({ searchTerm, onSearchChange, onClearSearch, selecte
         ref={navRef}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-slate-900/5 border-b border-slate-200/60'
-            : 'bg-white/50 backdrop-blur-md border-b border-slate-100/40'
+            ? 'bg-white md:bg-white/80 md:backdrop-blur-xl shadow-lg shadow-slate-900/5 border-b border-slate-200/60'
+            : 'bg-white/70 md:bg-white/50 md:backdrop-blur-md border-b border-slate-100/40'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-8">
@@ -196,7 +196,7 @@ export const Header = memo(({ searchTerm, onSearchChange, onClearSearch, selecte
       {/* Mobile: Bottom sheet */}
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-[60]" onClick={closeMobileMenu}>
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-fade-in" />
+          <div className="absolute inset-0 bg-slate-900/40 animate-fade-in" />
           <div
             className="absolute inset-x-0 bottom-0 bg-white rounded-t-3xl shadow-2xl shadow-slate-900/20 max-h-[85vh] overflow-y-auto animate-slide-up"
             onClick={(e) => e.stopPropagation()}

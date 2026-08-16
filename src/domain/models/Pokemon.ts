@@ -7,6 +7,8 @@ export interface PokemonBase {
   id: number;
   name: string;
   image: string;
+  /** Small 96px sprite, used in the list/mobile thumbnails. */
+  sprite?: string;
   types: string[];
   isLegendary?: boolean;
   isMythic?: boolean;
