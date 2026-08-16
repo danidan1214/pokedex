@@ -19,12 +19,12 @@ export const PokemonGrid = memo(({ pokemonList, isLoading, isSearching, onPokemo
     return (
       <div className="flex flex-col items-center justify-center min-h-[40vh]">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-slate-200 border-t-rose-500 rounded-full animate-spin" />
+          <div className="w-16 h-16 border-4 border-slate-200 dark:border-slate-700 border-t-rose-500 rounded-full animate-spin" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-4 h-4 bg-rose-500 rounded-full animate-ping" />
           </div>
         </div>
-        <p className="mt-6 text-slate-500 font-medium tracking-wide text-lg animate-pulse">
+        <p className="mt-6 text-slate-500 dark:text-slate-400 font-medium tracking-wide text-lg animate-pulse">
           {isSearching ? 'Buscando por todo el mundo...' : 'Cargando la Pokédex...'}
         </p>
       </div>
@@ -34,11 +34,11 @@ export const PokemonGrid = memo(({ pokemonList, isLoading, isSearching, onPokemo
   if (pokemonList.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[30vh] text-center p-8 animate-fade-in">
-        <div className="w-24 h-24 mb-6 bg-slate-100 rounded-full flex items-center justify-center text-slate-300">
+        <div className="w-24 h-24 mb-6 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-300 dark:text-slate-600">
           <SearchX className="w-12 h-12" />
         </div>
-        <h3 className="text-2xl font-bold text-slate-700 mb-2">No se encontraron Pokémon</h3>
-        <p className="text-slate-500">Intenta ajustar tu término de búsqueda o revisa que el nombre sea correcto.</p>
+        <h3 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-2">No se encontraron Pokémon</h3>
+        <p className="text-slate-500 dark:text-slate-400">Intenta ajustar tu término de búsqueda o revisa que el nombre sea correcto.</p>
       </div>
     );
   }

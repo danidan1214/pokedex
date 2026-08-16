@@ -80,6 +80,14 @@ assert(api.since() > 0, `modal fetched detail from pokeapi.co (got ${api.since()
 await desktop.keyboard.press('Escape');
 await desktop.waitForTimeout(300);
 
+console.log('\n[desktop] dark mode persists across reload (anti-FOUC)');
+await desktop.evaluate(() => localStorage.setItem('pokedex-theme', 'dark'));
+await desktop.reload({ waitUntil: 'networkidle' });
+const hasDarkClass = await desktop.evaluate(() => document.documentElement.classList.contains('dark'));
+assert(hasDarkClass, 'dark class applied from stored preference before paint');
+// restore to system so the shared browser context is not left in dark
+await desktop.evaluate(() => localStorage.setItem('pokedex-theme', 'system'));
+
 // ---------------------------------------------------------------------------
 // MOBILE: list view forced, thumbnails must be the 96px sprites
 // ---------------------------------------------------------------------------
